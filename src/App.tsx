@@ -14,7 +14,7 @@ import {
 } from './domain/persistence'
 import { authoredScore, rankedCandidates, teachingFacets } from './domain/teaching'
 import type { Candidate, GameState, Locale, Piece, PieceKind, Side, Variant } from './domain/types'
-import { localeOptions, sideName, translate } from './i18n'
+import { isSupportedLocale, localeOptions, sideName, translate } from './i18n'
 
 const LOCALE_KEY = 'three-boards.locale.v1'
 
@@ -24,7 +24,7 @@ function requestId(): string {
 
 function currentLocale(): Locale {
   const stored = localStorage.getItem(LOCALE_KEY)
-  return stored === 'zh-Hans' || stored === 'ja' ? stored : 'en'
+  return isSupportedLocale(stored) ? stored : 'en'
 }
 
 const chessGlyphs: Record<Side, Partial<Record<PieceKind, string>>> = {
@@ -336,6 +336,15 @@ export default function App() {
   const [errorKey, setErrorKey] = useState<string | null>(null)
   useEffect(() => {
     document.documentElement.lang = locale
+    document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr'
+    document.title = translate(locale, 'app.title')
+    let descriptionElement = document.querySelector<HTMLMetaElement>('meta[name="description"]')
+    if (!descriptionElement) {
+      descriptionElement = document.createElement('meta')
+      descriptionElement.name = 'description'
+      document.head.append(descriptionElement)
+    }
+    descriptionElement.content = translate(locale, 'app.subtitle')
   }, [locale])
   useEffect(() => {
     const receiveExternalStore = (event: StorageEvent) => {
@@ -450,11 +459,19 @@ export default function App() {
           </div>
         </div>
         <div className="top-actions">
-          <div className="locale-switch" aria-label={translate(locale, 'locale.label')}>
-            {localeOptions.map((option) => (
-              <button type="button" key={option.id} className={locale === option.id ? 'is-active' : ''} onClick={() => changeLocale(option.id)}>{option.label}</button>
-            ))}
-          </div>
+          <label className="locale-switch">
+            <span className="sr-only">{translate(locale, 'locale.label')}</span>
+            <select
+              aria-label={translate(locale, 'locale.label')}
+              value={locale}
+              onChange={(event) => {
+                const next = event.target.value
+                if (isSupportedLocale(next)) changeLocale(next)
+              }}
+            >
+              {localeOptions.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
+            </select>
+          </label>
           <button type="button" className="quiet-button" onClick={() => setSessionsOpen(true)}>{translate(locale, 'action.sessions')}</button>
           <button type="button" className="primary-button" onClick={newLesson}><span aria-hidden="true">＋</span>{translate(locale, 'action.new')}</button>
         </div>

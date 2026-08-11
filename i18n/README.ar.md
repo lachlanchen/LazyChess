@@ -1,0 +1,87 @@
+[English](../README.md) · [العربية](README.ar.md) · [Español](README.es.md) · [Français](README.fr.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Tiếng Việt](README.vi.md) · [中文 (简体)](README.zh-Hans.md) · [中文（繁體）](README.zh-Hant.md) · [Deutsch](README.de.md) · [Русский](README.ru.md)
+
+[![LazyingArt banner](https://github.com/lachlanchen/lachlanchen/raw/main/figs/banner.png)](https://github.com/lachlanchen/lachlanchen/blob/main/figs/banner.png)
+
+# LazyChess
+
+*شاهد النقلة قبل تنفيذها — في الشطرنج وشيانغتشي وشوغي.*
+
+[![Website](https://img.shields.io/badge/Website-LazyingArt-0EA5E9?style=flat-square)](https://lazying.art) [![App screenshot](https://img.shields.io/badge/Preview-App-1F6651?style=flat-square)](../docs/images/app.png) [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-lachlanchen-EA4AAA?style=flat-square&logo=githubsponsors)](https://github.com/sponsors/lachlanchen)
+
+LazyChess استوديو تعليمي محلي أولًا للشطرنج الدولي وشيانغتشي وشوغي. يفحص المتعلم النوايا القانونية، ويعاين لوحة افتراضية ثابتة، ويقرأ جوانب تعليمية موضحة المصدر، ثم يؤكد صراحة قبل أن تغيّر القواعد الحتمية حالة اللعب.
+
+| Donate | PayPal | Stripe |
+| --- | --- | --- |
+| [![Donate](https://img.shields.io/badge/Donate-LazyingArt-0EA5E9?style=for-the-badge&logo=kofi&logoColor=white)](https://chat.lazying.art/donate) | [![PayPal](https://img.shields.io/badge/PayPal-RongzhouChen-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/RongzhouChen) | [![Stripe](https://img.shields.io/badge/Stripe-Donate-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://buy.stripe.com/aFadR8gIaflgfQV6T4fw400) |
+
+## معاينة
+
+![استوديو LazyChess التعليمي](../docs/images/app.png)
+
+تفصل الواجهة بصريًا بين الأدلة الدقيقة والمحسوبة والمؤلفة وأدلة المحرك والنموذج والتشبيه. تشترك إحدى عشرة لغة داخل التطبيق في تكافؤ صارم للمفاتيح والمتغيرات، وتحوّل العربية اتجاه المستند إلى اليمين.
+
+## ثلاثة مسارات للقواعد
+
+| النمط | السلطة الحتمية | الحدود الحالية |
+| --- | --- | --- |
+| الشطرنج الدولي | `chess.js` 1.4.0 | قانونية قياسية تشمل الكش والتبييت والأخذ بالتجاوز والترقية والمات واكتشاف التعادل |
+| شيانغتشي | محول TypeScript مؤلف | نواة تعليمية للحركة وساق الحصان وحواجز المدفع والنهر والقصر ومواجهة القائدين وسلامة الكش والخسارة بلا نقلات؛ أحكام التكرار والمطاردة مؤجلة |
+| شوغي | محول TypeScript مؤلف | نواة تعليمية للحركة والإسقاط والقطع في اليد والترقية وnifu وسلامة الكش والخسارة بلا نقلات؛ التكرار والكش الدائم ومات إسقاط البيدق مؤجلة |
+
+يشرح الرفيق ولا ينقل. تقدم المحركات الاختيارية أدلة محدودة فقط ولا تغيّر الحالة الموثوقة.
+
+## خريطة المستودع
+
+| المسار | الغرض |
+| --- | --- |
+| `src/domain/` | القواعد الحتمية والاقتراحات والجوانب التعليمية والاستمرارية |
+| `src/i18n/` | أحد عشر كتالوجًا كاملًا واختبارات التكافؤ |
+| `references/engines.md` | مصدر المحركات الاختيارية وعقد الإعداد المتحقق منه |
+| `scripts/` | فحوص أمان المحركات وإعدادها والتحقق منها |
+| `docs/images/app.png` | لقطة التطبيق الحالية |
+
+## بدء سريع
+
+يتطلب Node.js `^20.19.0` أو `>=22.12.0`.
+
+```bash
+npm ci
+npm run dev
+```
+
+يرتبط Vite بالواجهة المحلية افتراضيًا. يُحفظ اختيار اللغة عبر قائمة سماح صريحة من 11 قيمة، وتعود القيم المجهولة بأمان إلى الإنجليزية.
+
+## عقد التعليم الحتمي
+
+- تربط معرفات الاقتراح الحالة الكاملة واللاعب والإجراء القانوني الموحّد.
+- تشتق المعاينات حالة ثابتة ولا تكتب في التخزين.
+- تُرفض الاختيارات القديمة أو المجهولة أو ذات اللاعب الخطأ أو اللاحقة لانتهاء اللعب.
+- تبقى للأدلة الدقيقة والمحسوبة والمؤلفة وأدلة المحرك والنموذج والتشبيه تسميات مصدر منفصلة.
+- تظل حدود شيانغتشي وشوغي ظاهرة ولا تُعرض كأحكام كاملة.
+
+## التحقق
+
+```bash
+npm run check
+git diff --check
+```
+
+تغطي الحزمة قواعد ممثلة، وربط الاقتراحات بالحالة، وتكرار الطلبات، والمعاينات الثابتة، وسباقات التخزين، واستئناف الجلسات، وأمان مسارات المحرك، وتكافؤ 11 لغة، وحفظ اللغة، واتجاه RTL، والتأكيد الصريح.
+
+## الاستشهاد
+
+إذا استخدمت LazyChess في بحث، فاستشهد بالمستودع. يقرأ GitHub ملف [CITATION.cff](../CITATION.cff) ويعرض لوحة **Cite this repository** في صفحة المشروع.
+
+```bibtex
+@software{chen_three_boards_teacher_2026,
+  author  = {Chen, Lachlan},
+  title   = {Three Boards Teacher: International Chess, Xiangqi, and Shogi},
+  year    = {2026},
+  version = {0.1.0},
+  url     = {https://github.com/lachlanchen/LazyChess}
+}
+```
+
+## الحالة والترخيص
+
+التطبيق التعليمي محلي أولًا ومرخص بـ MIT. مكتبة `chess.js` بترخيص BSD-2-Clause. تبقى Stockfish وPikafish وFairy-Stockfish برامج GPL-3.0 مثبتة منفصلة وغير مضمّنة.

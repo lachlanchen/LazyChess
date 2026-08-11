@@ -26,9 +26,27 @@ describe('teaching interaction', () => {
 
   it('switches all learner-facing primary copy to Simplified Chinese', () => {
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: '中文' }))
+    fireEvent.change(screen.getByRole('combobox', { name: 'Language' }), { target: { value: 'zh-Hans' } })
     expect(screen.getByText('落子之前，先看懂它。')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /确认走子/i })).not.toBeInTheDocument()
+    expect(document.title).toBe('落子之前，先看懂它。')
+  })
+
+  it('restores only allowlisted locales and marks Arabic as RTL', () => {
+    localStorage.setItem('three-boards.locale.v1', 'ar')
+    const { unmount } = render(<App />)
+    expect(screen.getByRole('combobox', { name: 'اللغة' })).toHaveValue('ar')
+    expect(document.documentElement).toHaveAttribute('lang', 'ar')
+    expect(document.documentElement).toHaveAttribute('dir', 'rtl')
+    expect(document.title).toBe('شاهد النقلة قبل تنفيذها.')
+    expect(document.querySelector('meta[name="description"]')).toHaveAttribute('content', expect.stringContaining('القواعد'))
+    unmount()
+
+    localStorage.setItem('three-boards.locale.v1', 'invalid-locale')
+    render(<App />)
+    expect(screen.getByRole('combobox', { name: 'Language' })).toHaveValue('en')
+    expect(document.documentElement).toHaveAttribute('dir', 'ltr')
+    expect(document.title).toBe('See the move before you make it.')
   })
 
   it('selects all three modes and resumes each without duplicate sessions', async () => {

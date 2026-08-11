@@ -1,6 +1,19 @@
 export type Variant = 'chess' | 'xiangqi' | 'shogi'
 export type Side = 'first' | 'second'
-export type Locale = 'en' | 'zh-Hans' | 'ja'
+export const SUPPORTED_LOCALES = [
+  'en',
+  'ar',
+  'es',
+  'fr',
+  'ja',
+  'ko',
+  'vi',
+  'zh-Hans',
+  'zh-Hant',
+  'de',
+  'ru',
+] as const
+export type Locale = (typeof SUPPORTED_LOCALES)[number]
 export type Evidence = 'exact' | 'calculated' | 'engine' | 'authored' | 'model' | 'analogy'
 export type PieceKind =
   | 'king'

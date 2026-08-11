@@ -1,6 +1,7 @@
 import type { Locale } from '../domain/types'
+import { additionalCatalogs } from './catalogs.additional'
 
-export const catalogs: Record<Locale, Record<string, string>> = {
+const originalCatalogs = {
   en: {
     'app.eyebrow': 'THREE BOARDS · TEACHING STUDIO',
     'app.title': 'See the move before you make it.',
@@ -290,4 +291,18 @@ export const catalogs: Record<Locale, Record<string, string>> = {
     'error.stale': 'このプレビューは古い局面のものです。選び直してください。',
     'error.save': 'ローカル保存を確認できなかったため、最新の保存済みレッスンを再読込しました。',
   },
+}
+
+export const catalogs: Record<Locale, Record<string, string>> = {
+  en: originalCatalogs.en,
+  ar: additionalCatalogs.ar,
+  es: additionalCatalogs.es,
+  fr: additionalCatalogs.fr,
+  ja: originalCatalogs.ja,
+  ko: additionalCatalogs.ko,
+  vi: additionalCatalogs.vi,
+  'zh-Hans': originalCatalogs['zh-Hans'],
+  'zh-Hant': additionalCatalogs['zh-Hant'],
+  de: additionalCatalogs.de,
+  ru: additionalCatalogs.ru,
 }

@@ -9,8 +9,8 @@ authority or persistence code.
 - Preserve non-mutating preview and explicit confirmation.
 - Keep the Xiangqi and Shogi subset labels accurate until every deferred
   adjudication rule has deterministic tests.
-- Add every learner-facing string to all three catalogs and keep catalog-parity
-  tests green.
+- Add every learner-facing string to all eleven catalogs and keep key and
+  interpolation-placeholder parity tests green.
 - Do not commit `.local`, sessions, browser data, engine binaries, model weights,
   caches, or generated build output.
 - Do not launch a second Game workspace noVNC stack. Follow the shared runtime
