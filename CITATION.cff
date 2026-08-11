@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use Three Boards Teacher, please cite this software."
+type: software
+title: "Three Boards Teacher: International Chess, Xiangqi, and Shogi"
+version: 0.1.0
+date-released: 2026-08-11
+authors:
+  - family-names: Chen
+    given-names: Lachlan
+repository-code: "https://github.com/lachlanchen/Chess"
+url: "https://github.com/lachlanchen/Chess"
+license: MIT
+keywords:
+  - chess
+  - xiangqi
+  - shogi
+  - game teaching
+  - local-first

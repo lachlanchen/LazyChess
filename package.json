@@ -1,0 +1,62 @@
+{
+  "name": "three-boards-teacher",
+  "version": "0.1.0",
+  "description": "A local-first decision teacher for International Chess, Xiangqi, and Shogi.",
+  "private": true,
+  "license": "MIT",
+  "author": "Lachlan Chen",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lachlanchen/Chess.git"
+  },
+  "homepage": "https://github.com/lachlanchen/Chess#readme",
+  "bugs": {
+    "url": "https://github.com/lachlanchen/Chess/issues"
+  },
+  "keywords": [
+    "chess",
+    "xiangqi",
+    "shogi",
+    "teaching",
+    "local-first"
+  ],
+  "packageManager": "npm@10.9.4",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc -b && vite build",
+    "lint": "eslint . --max-warnings 0",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:scripts": "bash scripts/test-engine-safety.sh",
+    "audit": "npm audit --audit-level=high",
+    "check": "npm run lint && npm test && npm run build && npm run audit && bash -n scripts/*.sh && npm run test:scripts"
+  },
+  "dependencies": {
+    "@noble/hashes": "2.3.0",
+    "chess.js": "1.4.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/user-event": "14.6.1",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "@vitejs/plugin-react": "6.0.5",
+    "eslint": "10.0.1",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "eslint-plugin-react-refresh": "0.5.4",
+    "globals": "17.9.0",
+    "jsdom": "29.1.1",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.67.0",
+    "vite": "8.2.1",
+    "vitest": "4.1.10"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  }
+}

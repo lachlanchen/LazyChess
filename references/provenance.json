@@ -1,0 +1,42 @@
+{
+  "schema_version": 2,
+  "status": "not-installed",
+  "shared_root_environment": "GAME_MODEL_ROOT",
+  "default_shared_root": "../.local/models",
+  "dispatch": {
+    "chess": "stockfish-18-avxvnni",
+    "xiangqi": "pikafish-2026-01-02-avxvnni",
+    "shogi": "fairy-stockfish-14-largeboard"
+  },
+  "lanes": [
+    {
+      "engine_id": "stockfish-18-avxvnni",
+      "project": "official-stockfish/Stockfish",
+      "release": "sf_18",
+      "commit": "cb3d4ee9b47d0c5aae855b12379378ea1439675c",
+      "artifact": "stockfish-ubuntu-x86-64-avxvnni.tar",
+      "bytes": 114391040,
+      "sha256": "57fb4139ea786c5cb606099cd901bf363d57e0e00c5a3dc7cd98269a6baf041a",
+      "license": "GPL-3.0"
+    },
+    {
+      "engine_id": "pikafish-2026-01-02-avxvnni",
+      "project": "official-pikafish/Pikafish",
+      "release": "Pikafish-2026-01-02",
+      "commit": "ce0679e00ee196f7ba17f6ec18941b9a5036f8cf",
+      "artifact": "Pikafish.2026-01-02.7z",
+      "bytes": 55332846,
+      "sha256": "84257063905615919fb4ee6a70273a94843bb6ec04c45e3ac706098838bc1a49",
+      "license": "GPL-3.0"
+    },
+    {
+      "engine_id": "fairy-stockfish-14-largeboard",
+      "project": "fairy-stockfish/Fairy-Stockfish",
+      "release": "fairy_sf_14",
+      "commit": "f3e6969d11d1bec17eba26e7ae0e629ad4af71dd",
+      "build": "ARCH=x86-64 largeboards=yes nnue=no",
+      "role": "shogi-fallback",
+      "license": "GPL-3.0"
+    }
+  ]
+}
