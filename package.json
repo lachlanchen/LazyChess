@@ -7,11 +7,11 @@
   "author": "Lachlan Chen",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lachlanchen/Chess.git"
+    "url": "git+https://github.com/lachlanchen/LazyChess.git"
   },
-  "homepage": "https://github.com/lachlanchen/Chess#readme",
+  "homepage": "https://github.com/lachlanchen/LazyChess#readme",
   "bugs": {
-    "url": "https://github.com/lachlanchen/Chess/issues"
+    "url": "https://github.com/lachlanchen/LazyChess/issues"
   },
   "keywords": [
     "chess",
