@@ -17,6 +17,10 @@ function sideFromColor(color: Color): Side {
   return color === 'w' ? 'first' : 'second'
 }
 
+function colorFromSide(side: Side): Color {
+  return side === 'first' ? 'w' : 'b'
+}
+
 function toInternal(value: string): string {
   return `${value[0]}${9 - Number(value[1])}`
 }
@@ -83,6 +87,36 @@ export function chessCandidates(state: GameState): Candidate[] {
     }
     return candidateFor(state, action, move.san)
   })
+}
+
+/**
+ * Returns the origins whose pieces control `target` under the standard-chess
+ * attack relation. This is deliberately different from legal move mobility:
+ * it includes defended friendly pieces and pawn attack diagonals, while a
+ * pinned piece can still control a square for king-safety purposes.
+ */
+export function chessControlOrigins(state: GameState, target: string, side: Side): string[] {
+  return chessFor(state)
+    .attackers(toChess(target), colorFromSide(side))
+    .map(toInternal)
+    .sort()
+}
+
+export function chessControlMap(state: GameState): Record<Side, Record<string, string[]>> {
+  const game = chessFor(state)
+  const result: Record<Side, Record<string, string[]>> = { first: {}, second: {} }
+  for (const side of ['first', 'second'] as const) {
+    for (let rank = 1; rank <= 8; rank += 1) {
+      for (let file = 0; file < 8; file += 1) {
+        const target = `${String.fromCharCode(97 + file)}${rank}`
+        result[side][target] = game
+          .attackers(toChess(target), colorFromSide(side))
+          .map(toInternal)
+          .sort()
+      }
+    }
+  }
+  return result
 }
 
 export function applyChessAction(state: GameState, action: Action, notation: string, now: string): GameState {

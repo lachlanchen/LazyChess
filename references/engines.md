@@ -2,12 +2,15 @@
 
 Repository status: **reviewed and pinned; no archive, binary, source checkout,
 or model is committed or auto-loaded**. Setup installs privately under the
-ignored shared model root. An installed engine remains outside game authority
-until a bounded adapter validates its receipt and legal candidate mapping.
+ignored shared model root. The loopback-only analysis bridge verifies installed
+artifacts again at search time and maps engine lines back to deterministic legal
+candidate IDs; it never becomes game authority.
 
-The product dispatch plan uses a specialist engine for each mature analysis
-lane. The UI continues to say “offline” until a future adapter verifies a local
-receipt and starts a bounded process.
+The product dispatch uses a specialist engine for each mature analysis lane.
+When a verified local install is available, the UI shows a bounded search with
+engine identity, root-side perspective, score, depth, nodes, elapsed time,
+principal-variation rank, and the configured limit. Otherwise it explicitly
+falls back to deterministic rule evidence and a labeled authored teaching order.
 
 | Product mode | Engine lane | Reviewed artifact | Integrity |
 | --- | --- | --- | --- |
@@ -39,6 +42,11 @@ CPU; it never silently substitutes an unreviewed artifact.
 Upstream describes Pikafish as a UCI Xiangqi engine and reports improved VNNI
 performance in this release. The archive is verified before extraction and only
 an ELF AVX-VNNI executable inside that verified archive may be selected.
+The currently reviewed network inside the archive is `pikafish.nnue`, exactly
+53,212,941 bytes with SHA-256
+`c4026370d7516d9b0f668447f9ca1931241538bdc689cde6fec6a991ac4d5f77`.
+Both the binary and this network are re-hashed before every analysis process;
+their hashes are part of the visible engine-evidence receipt.
 
 ### Fairy-Stockfish 14 Shogi fallback
 
@@ -84,8 +92,9 @@ The installer:
    a private `receipt.json`.
 
 Verification checks the receipt against `config/engines.env`, re-hashes the
-selected binary, rechecks Fairy-Stockfish’s source Git object, validates CPU
-support, and requires a successful UCI identity/readiness exchange.
+selected binary and Pikafish network, rechecks Fairy-Stockfish’s source Git
+object, validates CPU support, and requires a successful UCI
+identity/readiness exchange.
 
 The receipt is an owner-local installation record, not a cryptographic
 signature. It detects accidental drift against the recorded binary hash; if the
@@ -98,9 +107,18 @@ any GPL binary must satisfy the corresponding upstream source and license terms.
 
 ## Runtime authority boundary
 
-An eventual adapter may provide a public position and bounded search budget.
-Engine output must be intersected with deterministic `legalActions` and mapped
-to a candidate ID issued for the same state token. It never mutates a game,
-bypasses explicit confirmation, or becomes an “exact” teaching fact. Every
-engine claim must carry engine ID, artifact/source pin, position, perspective,
-depth, nodes, principal variation, and limit settings.
+The Vite loopback bridge accepts a bounded current position plus its ordered
+move history. It replays that history in the selected engine, asks the engine
+for its FEN, and rejects the result unless the decoded board, side to move, and
+Shogi hand inventory exactly match the deterministic client snapshot. Request
+bodies, history, output, principal variations, concurrency, queue size, hash,
+threads, MultiPV count, and thinking time are all bounded. Identical searches
+coalesce; a newer caller cannot inherit an already-aborted search.
+
+Engine output is intersected with deterministic `legalActions` and mapped to a
+candidate ID issued for the same state token. It never mutates a game, bypasses
+explicit confirmation, defines legality, or becomes an “exact” teaching fact.
+Every engine claim carries engine ID, binary/source pin (and network pin when
+used), root-side perspective, depth, nodes, elapsed time, principal-variation
+rank, and limit settings. The local deterministic position map remains usable
+if the optional engine lane is absent, busy, rejected, or interrupted.

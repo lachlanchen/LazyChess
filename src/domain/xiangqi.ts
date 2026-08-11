@@ -111,6 +111,78 @@ function rawDestinations(board: Board, from: string): string[] {
   return result
 }
 
+/**
+ * Rule-native capture control, including a friendly occupied endpoint as a
+ * defended square. Cannon control begins only beyond exactly one screen; the
+ * screen-free squares a cannon may move through belong to mobility, not this
+ * attack relation.
+ */
+export function xiangqiControlTargets(board: Board, from: string): string[] {
+  const piece = board[from]
+  if (!piece) return []
+  const { x, y } = point(from)
+  const forward = piece.side === 'first' ? -1 : 1
+  const result: string[] = []
+  const add = (tx: number, ty: number) => {
+    if (inside(SHAPE, tx, ty)) result.push(square(tx, ty))
+  }
+  const ray = (dx: number, dy: number) => {
+    for (let tx = x + dx, ty = y + dy; inside(SHAPE, tx, ty); tx += dx, ty += dy) {
+      result.push(square(tx, ty))
+      if (board[square(tx, ty)]) break
+    }
+  }
+  const cannonRay = (dx: number, dy: number) => {
+    let foundScreen = false
+    for (let tx = x + dx, ty = y + dy; inside(SHAPE, tx, ty); tx += dx, ty += dy) {
+      const coordinate = square(tx, ty)
+      const occupied = Boolean(board[coordinate])
+      if (!foundScreen) {
+        if (occupied) foundScreen = true
+        continue
+      }
+      result.push(coordinate)
+      if (occupied) break
+    }
+  }
+
+  if (piece.kind === 'king') {
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      if (palace(piece.side, x + dx, y + dy)) add(x + dx, y + dy)
+    }
+    const enemyKing = Object.entries(board).find(([, other]) => other.kind === 'king' && other.side !== piece.side)?.[0]
+    if (enemyKing && point(enemyKing).x === x && clearLine(board, from, enemyKing) === 0) result.push(enemyKing)
+  } else if (piece.kind === 'advisor') {
+    for (const [dx, dy] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) {
+      if (palace(piece.side, x + dx, y + dy)) add(x + dx, y + dy)
+    }
+  } else if (piece.kind === 'elephant') {
+    for (const [dx, dy] of [[2, 2], [2, -2], [-2, 2], [-2, -2]]) {
+      const ty = y + dy
+      const ownHalf = piece.side === 'first' ? ty >= 5 : ty <= 4
+      if (ownHalf && !board[square(x + dx / 2, y + dy / 2)]) add(x + dx, ty)
+    }
+  } else if (piece.kind === 'knight') {
+    const jumps = [
+      [2, 1, 1, 0], [2, -1, 1, 0], [-2, 1, -1, 0], [-2, -1, -1, 0],
+      [1, 2, 0, 1], [-1, 2, 0, 1], [1, -2, 0, -1], [-1, -2, 0, -1],
+    ]
+    for (const [dx, dy, lx, ly] of jumps) if (!board[square(x + lx, y + ly)]) add(x + dx, y + dy)
+  } else if (piece.kind === 'rook') {
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) ray(dx, dy)
+  } else if (piece.kind === 'cannon') {
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) cannonRay(dx, dy)
+  } else if (piece.kind === 'pawn') {
+    add(x, y + forward)
+    const crossed = piece.side === 'first' ? y <= 4 : y >= 5
+    if (crossed) {
+      add(x - 1, y)
+      add(x + 1, y)
+    }
+  }
+  return [...new Set(result)].sort()
+}
+
 function attacks(board: Board, attacker: Side, target: string): boolean {
   return Object.entries(board).some(([from, piece]) => piece.side === attacker && rawDestinations(board, from).includes(target))
 }

@@ -18,7 +18,7 @@ LazyChess is a local-first teaching studio for International Chess, Xiangqi, and
 
 ![LazyChess teaching studio](docs/images/app.png)
 
-The interface keeps exact, calculated, authored, engine, model, and analogy evidence visibly distinct. Eleven in-app languages share strict catalog and placeholder parity; Arabic also switches the document to right-to-left layout.
+The game-native Position Map separates exact square control and piece contact, calculated routes and contact-only exchange outlooks, authored plans, and bounded engine lines. Hover or focus previews the same evidence without moving; only an explicit confirmation changes the game. Eleven in-app languages share strict catalog and placeholder parity; Arabic also switches the document to right-to-left layout.
 
 ## Three rule lanes
 
@@ -29,6 +29,15 @@ The interface keeps exact, calculated, authored, engine, model, and analogy evid
 | Shogi | Authored TypeScript adapter | Teaching core with movement, drops, captures to hand, promotion, nifu, check safety, and no-move loss; repetition, perpetual check, and pawn-drop mate are deferred |
 
 The companion explains but cannot move. Optional engines provide bounded evidence only and never mutate authoritative state.
+
+## Position Map and analysis
+
+- **Control** shows rule-native attacks and defenses, including pawn attacks, Xiangqi cannon screens and horse legs, and Shogi drops separately from legal mobility.
+- **Safety** marks defended, attacked, loose, rescued, and newly exposed pieces without pretending that contact alone proves a capture.
+- **Lines** draws variant-native sliding routes, opened lanes, cannon screens, and promotion camps—not a Go ownership cloud.
+- **King zone** compares checked squares, hostile ring squares, and exact legal king destinations, including Xiangqi flying-general constraints.
+- A fresh board offers one clearly hypothetical teaching suggestion. Candidate hover/focus/tap compares before and after; right-click or Escape clears it; **Confirm** is the sole mutation.
+- Stockfish and Pikafish can add bounded specialist score/PV evidence. Fairy-Stockfish is visibly labeled a classical Shogi fallback. Every engine lane states its root-side perspective, search limit, depth, nodes, time, source/binary provenance, and non-comparable engine-native score scale.
 
 ## Repository map
 
@@ -57,6 +66,8 @@ Vite binds to loopback by default. Locale choices are persisted through an expli
 - Previews derive immutable state and never write storage.
 - Stale, unknown, wrong-actor, and post-game selections fail closed.
 - Exact, calculated, authored, engine, model, and analogy claims retain separate provenance labels.
+- Candidate replies are bounded forcing-feature samples, not engine lines or forced predictions; material outlooks use an explicitly authored piece-value scale.
+- Analysis is bound to the full state token and actor. Stale engine or candidate evidence is rejected rather than repainted over a newer position.
 - Xiangqi and Shogi limits remain visible instead of being presented as complete adjudication.
 
 ## Validation
@@ -66,7 +77,7 @@ npm run check
 git diff --check
 ```
 
-The suite covers representative rules, state-bound candidates, idempotency, immutable previews, persistence races, session resume, engine-path safety, 11-language catalog parity, locale persistence, RTL direction, and explicit confirmation.
+The suite covers representative rules, high-branching Shogi analysis, state-bound candidates, immutable previews, en-passant/cannon/flying-general/drop evidence, idempotency, persistence races, session resume, bounded engine protocol and path safety, 11-language catalog parity, locale persistence, RTL direction, and explicit confirmation.
 
 ## Citation
 

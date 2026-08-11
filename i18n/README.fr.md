@@ -18,7 +18,7 @@ LazyChess est un studio pédagogique local-first pour les Échecs internationaux
 
 ![Studio pédagogique LazyChess](../docs/images/app.png)
 
-L’interface sépare visiblement les preuves exactes, calculées, rédigées, issues d’un moteur, d’un modèle ou d’une analogie. Les onze langues de l’application respectent une parité stricte des catalogues et paramètres ; l’arabe active aussi la direction droite-à-gauche.
+La Carte de position propre à chaque jeu sépare le contrôle exact des cases et les contacts entre pièces, les trajets calculés et les perspectives d’échange fondées sur les seuls contacts, les plans élaborés par les auteurs et les variantes moteur bornées. Le survol ou le focus prévisualise les mêmes preuves sans jouer ; seule une confirmation explicite modifie la partie. Les onze langues de l’application respectent une parité stricte des catalogues et paramètres ; l’arabe active aussi la direction droite-à-gauche.
 
 ## Trois voies de règles
 
@@ -29,6 +29,15 @@ L’interface sépare visiblement les preuves exactes, calculées, rédigées, i
 | Shogi | Adaptateur TypeScript rédigé | Noyau pédagogique : mouvements, parachutages, captures en main, promotion, nifu, sécurité en échec et défaite sans coup ; répétition, échec perpétuel et mat par parachutage de pion différés |
 
 Le compagnon explique mais ne joue pas. Les moteurs facultatifs fournissent uniquement des preuves bornées et ne modifient jamais l’état faisant autorité.
+
+## Carte de position et analyse
+
+- **Contrôle** montre les attaques et défenses propres aux règles, notamment les attaques de pions, les écrans de canon et jambes du cheval du Xiangqi, ainsi que les parachutages du Shogi séparément de la mobilité légale.
+- **Sécurité** signale les pièces défendues, attaquées, en prise sans protection, sauvées et nouvellement exposées, sans prétendre qu’un simple contact prouve une prise.
+- **Lignes** trace les trajets des pièces à longue portée propres à chaque variante, les lignes ouvertes, les écrans de canon et les zones de promotion — pas un nuage de territoire emprunté au Go.
+- La **zone du roi** compare les cases mettant le roi en échec, les cases hostiles autour de lui et ses destinations exactement légales, y compris la contrainte des généraux face à face du Xiangqi.
+- Un plateau neuf propose une seule suggestion pédagogique clairement hypothétique. Le survol, le focus ou le toucher compare l’avant et l’après ; un clic droit ou Escape (Échap) l’efface ; **Confirmer** est la seule mutation.
+- Stockfish et Pikafish peuvent ajouter des preuves bornées de scores et variantes principales (PV) de moteurs spécialisés. Fairy-Stockfish est clairement signalé comme solution classique de repli pour le Shogi. Chaque voie moteur indique le point de vue du camp racine, la limite de recherche, la profondeur, les nœuds, le temps, la provenance du code source et du binaire, ainsi que son échelle de score native non comparable entre variantes de jeu.
 
 ## Carte du dépôt
 
@@ -57,6 +66,8 @@ Vite écoute sur loopback par défaut. Le choix de langue est conservé par une 
 - Les aperçus dérivent un état immuable et n’écrivent jamais dans le stockage.
 - Les sélections périmées, inconnues, du mauvais acteur ou postérieures à la fin échouent de manière fermée.
 - Les affirmations exactes, calculées, rédigées, moteur, modèle et analogie gardent des étiquettes de provenance séparées.
+- Les réponses envisagées à un coup candidat sont des échantillons bornés de caractéristiques qui forcent une réponse, pas des variantes moteur ni des prédictions présentées comme forcées ; les perspectives matérielles utilisent une échelle de valeur des pièces explicitement définie par les auteurs.
+- L’analyse est liée au jeton d’état complet et à l’acteur. Une preuve moteur ou candidate périmée est rejetée plutôt que repeinte sur une position plus récente.
 - Les limites du Xiangqi et du Shogi restent visibles plutôt que présentées comme un arbitrage complet.
 
 ## Validation
@@ -66,7 +77,7 @@ npm run check
 git diff --check
 ```
 
-La suite couvre règles représentatives, candidats liés à l’état, idempotence, aperçus immuables, courses de persistance, reprise des sessions, sécurité des chemins de moteur, parité des 11 langues, persistance de la langue, direction RTL et confirmation explicite.
+La suite couvre des règles représentatives, l’analyse du Shogi à forte ramification, les candidats liés à l’état, les aperçus immuables, les preuves de prise en passant/canon/généraux face à face/parachutage, l’idempotence, les courses de persistance, la reprise des sessions, le protocole moteur borné et la sécurité des chemins, la parité des 11 langues, la persistance de la langue, la direction RTL et la confirmation explicite.
 
 ## Citation
 

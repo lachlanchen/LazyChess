@@ -18,7 +18,7 @@ LazyChess ist ein Local-first-Lernstudio für internationales Schach, Xiangqi un
 
 ![LazyChess-Lernstudio](../docs/images/app.png)
 
-Die Oberfläche trennt exakte, berechnete, verfasste, Engine-, Modell- und Analogiebelege sichtbar. Elf App-Sprachen halten strikte Katalog- und Platzhalterparität; Arabisch stellt zusätzlich die Dokumentrichtung auf rechts-nach-links.
+Die spielgerechte Positionskarte trennt exakte Feldkontrolle und Figurenkontakte, berechnete Zuglinien und nur auf Kontakten beruhende Abtauschaussichten, von den Autoren festgelegte Pläne und begrenzte Engine-Varianten. Bewegen des Zeigers oder Fokus zeigt dieselben Belege als Vorschau, ohne zu ziehen; nur eine ausdrückliche Bestätigung verändert die Partie. Elf App-Sprachen halten strikte Katalog- und Platzhalterparität; Arabisch stellt zusätzlich die Dokumentrichtung auf rechts-nach-links.
 
 ## Drei Regelbereiche
 
@@ -29,6 +29,15 @@ Die Oberfläche trennt exakte, berechnete, verfasste, Engine-, Modell- und Analo
 | Shogi | Eigener TypeScript-Adapter | Lehrkern mit Bewegung, Einsetzungen, Figuren auf der Hand, Beförderung, Nifu, Schachsicherheit und Verlust ohne Zug; Wiederholung, Dauerschach und Bauern-Einsetzmatt aufgeschoben |
 
 Der Begleiter erklärt, zieht aber nicht. Optionale Engines liefern nur begrenzte Belege und ändern niemals den maßgeblichen Zustand.
+
+## Positionskarte und Analyse
+
+- **Kontrolle** zeigt regelgerechte Angriffe und Verteidigungen, darunter Bauernangriffe, Xiangqi-Kanonenschirme und Pferdebeine sowie Shogi-Einsetzungen getrennt von der legalen Beweglichkeit.
+- **Sicherheit** kennzeichnet gedeckte, angegriffene, ungedeckte, gerettete und neu exponierte Figuren, ohne aus einem bloßen Kontakt eine sichere Eroberung abzuleiten.
+- **Linien** zeichnet variantengerechte Zuglinien gleitender Figuren, geöffnete Bahnen, Kanonenschirme und Beförderungszonen – keine aus Go übernommene Besitzwolke.
+- Die **Königszone** vergleicht Schachfelder, bedrohte Nachbarfelder und exakt legale Königsziele, einschließlich der Xiangqi-Regel der gegenüberstehenden Generäle.
+- Ein frisches Brett bietet genau einen deutlich als hypothetisch gekennzeichneten Lehrvorschlag. Zeiger-, Fokus- oder Tippvorschau vergleicht Vorher und Nachher; Rechtsklick oder Escape löscht sie; allein **Bestätigen** verändert den Zustand.
+- Stockfish und Pikafish können begrenzte spezialisierte Bewertungs- und PV-Belege ergänzen. Fairy-Stockfish ist sichtbar als klassische Shogi-Ausweichlösung gekennzeichnet. Jede Engine-Spur nennt Perspektive der Wurzelseite, Suchlimit, Tiefe, Knoten, Zeit, Quell-/Binärherkunft und die zwischen Spielvarianten nicht vergleichbare engineeigene Bewertungsskala.
 
 ## Repository-Übersicht
 
@@ -57,6 +66,8 @@ Vite bindet standardmäßig an Loopback. Die Sprachwahl wird über eine ausdrüc
 - Vorschauen leiten unveränderlichen Zustand ab und schreiben nie in den Speicher.
 - Veraltete, unbekannte, akteursfalsche und nach Spielende gewählte Aktionen werden geschlossen abgelehnt.
 - Exakte, berechnete, verfasste, Engine-, Modell- und Analogieaussagen behalten getrennte Herkunftslabels.
+- Erwogene Antworten auf einen Kandidatenzug sind begrenzte Stichproben von Merkmalen, die eine Reaktion erzwingen, keine Engine-Varianten oder als erzwungen dargestellten Vorhersagen; Materialaussichten verwenden eine ausdrücklich als Lehrannahme gekennzeichnete, von den Autoren festgelegte Figurenwerteskala.
+- Analysen sind an das vollständige Zustands-Token und den Akteur gebunden. Veraltete Engine- oder Kandidatenbelege werden abgelehnt, statt über eine neuere Position gezeichnet zu werden.
 - Xiangqi- und Shogi-Grenzen bleiben sichtbar und werden nicht als vollständige Wertung dargestellt.
 
 ## Validierung
@@ -66,7 +77,7 @@ npm run check
 git diff --check
 ```
 
-Die Tests umfassen repräsentative Regeln, zustandsgebundene Kandidaten, Idempotenz, unveränderliche Vorschauen, Persistenzrennen, Sitzungsfortsetzung, Engine-Pfadsicherheit, 11-Sprachen-Parität, Sprachspeicherung, RTL-Richtung und ausdrückliche Bestätigung.
+Die Tests umfassen repräsentative Regeln, stark verzweigte Shogi-Analysen, zustandsgebundene Kandidaten, unveränderliche Vorschauen, Belege für en passant, Kanonen, gegenüberstehende Generäle und Einsetzungen, Idempotenz, Persistenzrennen, Sitzungsfortsetzung, begrenztes Engine-Protokoll und Pfadsicherheit, 11-Sprachen-Parität, Sprachspeicherung, RTL-Richtung und ausdrückliche Bestätigung.
 
 ## Zitation
 

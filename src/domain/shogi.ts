@@ -89,6 +89,54 @@ function rawDestinations(board: Board, from: string): string[] {
   return result
 }
 
+/**
+ * Rule-native attack/defense geometry. Friendly occupied endpoints are kept as
+ * defended squares; sliding control stops at the first occupied square.
+ */
+export function shogiControlTargets(board: Board, from: string): string[] {
+  const piece = board[from]
+  if (!piece) return []
+  const { x, y } = point(from)
+  const forward = piece.side === 'first' ? -1 : 1
+  const result: string[] = []
+  const step = (dx: number, dy: number) => {
+    const tx = x + dx
+    const ty = y + dy
+    if (inside(SHAPE, tx, ty)) result.push(square(tx, ty))
+  }
+  const slide = (directions: number[][]) => {
+    for (const [dx, dy] of directions) {
+      for (let tx = x + dx, ty = y + dy; inside(SHAPE, tx, ty); tx += dx, ty += dy) {
+        const coordinate = square(tx, ty)
+        result.push(coordinate)
+        if (board[coordinate]) break
+      }
+    }
+  }
+
+  if (piece.kind === 'king') {
+    for (const dx of [-1, 0, 1]) for (const dy of [-1, 0, 1]) if (dx || dy) step(dx, dy)
+  } else if (piece.kind === 'gold' || ['promoted-silver', 'promoted-knight', 'promoted-lance', 'promoted-pawn'].includes(piece.kind)) {
+    for (const [dx, dy] of [[0, forward], [-1, forward], [1, forward], [-1, 0], [1, 0], [0, -forward]]) step(dx, dy)
+  } else if (piece.kind === 'silver') {
+    for (const [dx, dy] of [[0, forward], [-1, forward], [1, forward], [-1, -forward], [1, -forward]]) step(dx, dy)
+  } else if (piece.kind === 'knight') {
+    step(-1, 2 * forward)
+    step(1, 2 * forward)
+  } else if (piece.kind === 'lance') {
+    slide([[0, forward]])
+  } else if (piece.kind === 'pawn') {
+    step(0, forward)
+  } else if (piece.kind === 'rook' || piece.kind === 'promoted-rook') {
+    slide([[1, 0], [-1, 0], [0, 1], [0, -1]])
+    if (piece.kind === 'promoted-rook') for (const [dx, dy] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) step(dx, dy)
+  } else if (piece.kind === 'bishop' || piece.kind === 'promoted-bishop') {
+    slide([[1, 1], [1, -1], [-1, 1], [-1, -1]])
+    if (piece.kind === 'promoted-bishop') for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) step(dx, dy)
+  }
+  return [...new Set(result)].sort()
+}
+
 function inZone(side: Side, coordinate: string): boolean {
   const { y } = point(coordinate)
   return side === 'first' ? y <= 2 : y >= 6
@@ -187,7 +235,7 @@ export function shogiCandidates(state: GameState): Candidate[] {
   })
 }
 
-export function applyShogiAction(state: GameState, action: Action, now: string): GameState {
+function positionAfter(state: GameState, action: Action): Pick<GameState, 'board' | 'hands' | 'actor'> {
   const board = simulate(state.board, action, state.actor)
   const hands = {
     first: { ...state.hands.first },
@@ -203,6 +251,32 @@ export function applyShogiAction(state: GameState, action: Action, now: string):
     hands[state.actor][action.piece] = (hands[state.actor][action.piece] ?? 0) - 1
   }
   const actor = otherSide(state.actor)
+  return { board, hands, actor }
+}
+
+/**
+ * A bounded projection for already-canonical legal actions used by the
+ * teaching ranker. It computes the exact next board, hands, actor and check
+ * relation, but deliberately does not enumerate every reply to adjudicate
+ * mate/stalemate. Public previews continue to use `applyShogiAction`.
+ */
+export function projectShogiActionForInsight(state: GameState, action: Action): GameState {
+  const { board, hands, actor } = positionAfter(state, action)
+  const king = kingSquare(board, actor)
+  const inCheck = Boolean(king && attacks(board, otherSide(actor), king))
+  return {
+    ...state,
+    board,
+    hands,
+    actor,
+    ply: state.ply + 1,
+    status: { phase: 'active', inCheck },
+    updatedAt: state.updatedAt,
+  }
+}
+
+export function applyShogiAction(state: GameState, action: Action, now: string): GameState {
+  const { board, hands, actor } = positionAfter(state, action)
   const interim = { ...state, board, hands, actor }
   return {
     ...interim,

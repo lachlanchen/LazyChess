@@ -20,7 +20,14 @@ export function rankedCandidates(state: GameState, candidates: Candidate[]): Can
 }
 
 export function teachingFacets(before: GameState, after: GameState, candidate: Candidate): TeachingClaim[] {
-  const captured = before.board[candidate.action.to]
+  // A capture is not always located on the destination square. Standard
+  // chess en-passant removes the bypassed pawn, so derive the exact fact from
+  // the deterministic before/after boards instead of guessing from `to`.
+  const captured = Object.entries(before.board).some(([coordinate, piece]) => {
+    if (piece.side === candidate.actor) return false
+    const remaining = after.board[coordinate]
+    return !remaining || remaining.side !== piece.side || remaining.kind !== piece.kind
+  })
   const exactKey = candidate.action.kind === 'drop'
     ? 'teach.exact.drop'
     : captured
@@ -49,11 +56,17 @@ export function teachingFacets(before: GameState, after: GameState, candidate: C
       titleKey: 'teach.strategy.title',
       bodyKey: purposeKey,
     },
-    {
-      evidence: 'calculated',
-      titleKey: 'teach.reply.title',
-      bodyKey: after.status.inCheck ? 'teach.reply.check' : 'teach.reply.scan',
-    },
+    after.status.phase === 'complete'
+      ? {
+          evidence: 'exact',
+          titleKey: 'teach.reply.terminalTitle',
+          bodyKey: 'teach.reply.terminal',
+        }
+      : {
+          evidence: 'calculated',
+          titleKey: 'teach.reply.title',
+          bodyKey: after.status.inCheck ? 'teach.reply.check' : 'teach.reply.scan',
+        },
     {
       evidence: 'analogy',
       titleKey: 'teach.principle.title',

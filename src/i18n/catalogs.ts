@@ -1,4 +1,5 @@
 import type { Locale } from '../domain/types'
+import { analysisCatalogs } from './analysisCatalogs'
 import { additionalCatalogs } from './catalogs.additional'
 
 const originalCatalogs = {
@@ -55,7 +56,7 @@ const originalCatalogs = {
     'coach.question': 'Before confirming: what can the opponent attack after this?',
     'teach.exact.title': 'What changes · exact',
     'teach.exact.move': '{notation} moves from {from} to {to}. No capture occurs.',
-    'teach.exact.capture': '{notation} moves to {to} and removes the opposing piece there.',
+    'teach.exact.capture': '{notation} moves to {to} and removes an opposing piece.',
     'teach.exact.drop': '{notation} places a held {from} on {to}.',
     'teach.strategy.title': 'Why now · authored strategy',
     'teach.strategy.capture': 'This trades space or tempo for material. Check whether the capturing piece can safely remain there.',
@@ -65,6 +66,8 @@ const originalCatalogs = {
     'teach.reply.title': 'Likely reply · calculated fact',
     'teach.reply.check': 'The preview gives check. The opponent must answer the royal threat with a legal reply.',
     'teach.reply.scan': 'No forced reply is asserted. Scan captures, checks, and threats before trusting the plan.',
+    'teach.reply.terminalTitle': 'Reply status · exact',
+    'teach.reply.terminal': 'The deterministic rules mark the game complete. No opponent reply follows.',
     'teach.principle.title': 'Transferable picture · analogy',
     'teach.principle.lanes': 'Think of pieces as doors and corridors: a move matters when it opens your route or closes the opponent’s.',
     'evidence.exact': 'EXACT',
@@ -166,7 +169,7 @@ const originalCatalogs = {
     'coach.question': '确认前请想：这步之后，对手能攻击什么？',
     'teach.exact.title': '改变了什么 · 精确事实',
     'teach.exact.move': '{notation} 从 {from} 到 {to}，没有吃子。',
-    'teach.exact.capture': '{notation} 到达 {to}，并移除该处的对方棋子。',
+    'teach.exact.capture': '{notation} 到达 {to}，并移除一枚对方棋子。',
     'teach.exact.drop': '{notation} 把持有的{from}打入 {to}。',
     'teach.strategy.title': '为什么现在走 · 人工策略',
     'teach.strategy.capture': '这用空间或先手换取子力。要检查吃子后的棋子能否安全留下。',
@@ -176,6 +179,8 @@ const originalCatalogs = {
     'teach.reply.title': '可能的应手 · 计算事实',
     'teach.reply.check': '预览形成将军。对手必须用合法走法回应王的威胁。',
     'teach.reply.scan': '这里不声称有强制应手。相信计划前，先查吃子、将军和威胁。',
+    'teach.reply.terminalTitle': '应手状态 · 精确事实',
+    'teach.reply.terminal': '确定性规则已判定对局结束，对手不再有后续应手。',
     'teach.principle.title': '可迁移图景 · 类比',
     'teach.principle.lanes': '把棋子想成门与走廊：能打开己方路线或关闭对方路线的一步才有意义。',
     'evidence.exact': '精确',
@@ -257,7 +262,7 @@ const originalCatalogs = {
     'coach.question': '確定前の問い：この手のあと、相手は何を攻撃できますか？',
     'teach.exact.title': '何が変わるか · 正確',
     'teach.exact.move': '{notation} は {from} から {to} へ移動。駒は取りません。',
-    'teach.exact.capture': '{notation} は {to} へ移動し、そこにある相手の駒を取ります。',
+    'teach.exact.capture': '{notation} は {to} へ移動し、相手の駒を取ります。',
     'teach.exact.drop': '{notation} は持ち駒の {from} を {to} に打ちます。',
     'teach.strategy.title': 'なぜ今か · 著者の戦略',
     'teach.strategy.capture': '空間や手番を駒得に交換します。取った駒がその地点で安全か確認しましょう。',
@@ -267,6 +272,8 @@ const originalCatalogs = {
     'teach.reply.title': '予想される応手 · 計算事実',
     'teach.reply.check': 'プレビューは王手です。相手は王への脅威に合法手で応じなければなりません。',
     'teach.reply.scan': '強制手とは断定しません。計画を信じる前に、取り、王手、脅威を調べましょう。',
+    'teach.reply.terminalTitle': '応手の状態 · 正確',
+    'teach.reply.terminal': '決定的ルールにより対局終了です。相手の応手は続きません。',
     'teach.principle.title': '応用できる図 · たとえ',
     'teach.principle.lanes': '駒を扉と廊下として考えます。自分の道を開く、または相手の道を閉じる手に意味があります。',
     'evidence.exact': '正確', 'evidence.calculated': '計算', 'evidence.engine': 'エンジン', 'evidence.authored': '著者', 'evidence.model': 'モデル', 'evidence.analogy': 'たとえ',
@@ -294,15 +301,15 @@ const originalCatalogs = {
 }
 
 export const catalogs: Record<Locale, Record<string, string>> = {
-  en: originalCatalogs.en,
-  ar: additionalCatalogs.ar,
-  es: additionalCatalogs.es,
-  fr: additionalCatalogs.fr,
-  ja: originalCatalogs.ja,
-  ko: additionalCatalogs.ko,
-  vi: additionalCatalogs.vi,
-  'zh-Hans': originalCatalogs['zh-Hans'],
-  'zh-Hant': additionalCatalogs['zh-Hant'],
-  de: additionalCatalogs.de,
-  ru: additionalCatalogs.ru,
+  en: { ...originalCatalogs.en, ...analysisCatalogs.en },
+  ar: { ...additionalCatalogs.ar, ...analysisCatalogs.ar },
+  es: { ...additionalCatalogs.es, ...analysisCatalogs.es },
+  fr: { ...additionalCatalogs.fr, ...analysisCatalogs.fr },
+  ja: { ...originalCatalogs.ja, ...analysisCatalogs.ja },
+  ko: { ...additionalCatalogs.ko, ...analysisCatalogs.ko },
+  vi: { ...additionalCatalogs.vi, ...analysisCatalogs.vi },
+  'zh-Hans': { ...originalCatalogs['zh-Hans'], ...analysisCatalogs['zh-Hans'] },
+  'zh-Hant': { ...additionalCatalogs['zh-Hant'], ...analysisCatalogs['zh-Hant'] },
+  de: { ...additionalCatalogs.de, ...analysisCatalogs.de },
+  ru: { ...additionalCatalogs.ru, ...analysisCatalogs.ru },
 }

@@ -18,7 +18,7 @@ LazyChess es un estudio didáctico local-first para Ajedrez internacional, Xiang
 
 ![Estudio didáctico LazyChess](../docs/images/app.png)
 
-La interfaz mantiene separadas las evidencias exactas, calculadas, redactadas, de motor, de modelo y por analogía. Los once idiomas de la aplicación comparten paridad estricta de catálogos y variables; el árabe también activa la dirección de derecha a izquierda.
+El Mapa de posición propio de cada juego separa el control exacto de casillas y el contacto entre piezas, las rutas calculadas y las perspectivas de intercambio basadas solo en contactos, los planes elaborados por los autores y las líneas acotadas de motor. Pasar el puntero o enfocar previsualiza la misma evidencia sin mover; solo una confirmación explícita cambia la partida. Los once idiomas de la aplicación comparten paridad estricta de catálogos y variables; el árabe también activa la dirección de derecha a izquierda.
 
 ## Tres líneas de reglas
 
@@ -29,6 +29,15 @@ La interfaz mantiene separadas las evidencias exactas, calculadas, redactadas, d
 | Shogi | Adaptador TypeScript propio | Núcleo didáctico con movimiento, colocaciones, capturas a la mano, promoción, nifu, seguridad ante jaque y derrota sin jugadas; se difieren repetición, jaque perpetuo y mate al colocar peón |
 
 El acompañante explica, pero no mueve. Los motores opcionales solo aportan evidencia acotada y nunca mutan el estado autorizado.
+
+## Mapa de posición y análisis
+
+- **Control** muestra ataques y defensas según las reglas de cada juego, incluidos los ataques de peón, las pantallas de cañón y patas de caballo de Xiangqi, y las colocaciones de Shogi separadas de la movilidad legal.
+- **Seguridad** marca piezas defendidas, atacadas, sueltas, rescatadas y recién expuestas sin fingir que el mero contacto demuestra una captura.
+- **Líneas** dibuja rutas de piezas deslizantes propias de cada variante, líneas abiertas, pantallas de cañón y zonas de promoción; no una nube de territorio tomada del Go.
+- La **zona del rey** compara casillas en jaque, casillas hostiles alrededor del rey y destinos legales exactos del rey, incluidas las restricciones de los generales enfrentados de Xiangqi.
+- Un tablero nuevo ofrece una sola sugerencia didáctica claramente hipotética. La vista previa al pasar, enfocar o tocar compara el antes y el después; clic derecho o Escape la borra; **Confirmar** es la única operación que muta el estado.
+- Stockfish y Pikafish pueden añadir evidencia acotada de puntuaciones y variantes principales (PV) especializadas. Fairy-Stockfish aparece claramente como alternativa clásica para Shogi. Cada línea de motor declara la perspectiva del bando raíz, el límite de búsqueda, la profundidad, los nodos, el tiempo, la procedencia del código fuente y del binario, y su escala de puntuación nativa no comparable entre variantes de juego.
 
 ## Mapa del repositorio
 
@@ -57,6 +66,8 @@ Vite escucha en loopback de forma predeterminada. La elección de idioma se guar
 - Las vistas previas derivan un estado inmutable y nunca escriben en almacenamiento.
 - Las selecciones obsoletas, desconocidas, de actor incorrecto o posteriores al final fallan de forma cerrada.
 - Las afirmaciones exactas, calculadas, redactadas, de motor, modelo y analogía conservan etiquetas de procedencia separadas.
+- Las respuestas consideradas ante una jugada candidata son muestras acotadas de rasgos que fuerzan una respuesta, no líneas de motor ni predicciones presentadas como forzadas; las perspectivas de material emplean una escala de valores de piezas definida explícitamente por los autores.
+- El análisis está vinculado al token de estado completo y al actor. La evidencia obsoleta de motor o candidato se rechaza en vez de volver a pintarse sobre una posición más reciente.
 - Los límites de Xiangqi y Shogi siguen visibles y no se presentan como adjudicación completa.
 
 ## Validación
@@ -66,7 +77,7 @@ npm run check
 git diff --check
 ```
 
-La suite cubre reglas representativas, propuestas vinculadas al estado, idempotencia, vistas inmutables, carreras de persistencia, reanudación, seguridad de rutas de motores, paridad de 11 idiomas, persistencia de idioma, dirección RTL y confirmación explícita.
+La suite cubre reglas representativas, análisis de Shogi con alta ramificación, candidatos vinculados al estado, vistas previas inmutables, evidencia de captura al paso/cañón/generales enfrentados/colocaciones, idempotencia, carreras de persistencia, reanudación, protocolo acotado de motores y seguridad de rutas, paridad de 11 idiomas, persistencia de idioma, dirección RTL y confirmación explícita.
 
 ## Cita
 

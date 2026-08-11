@@ -20,7 +20,7 @@ model_root="$(engine_model_root)"
 
 verify_one() {
   local engine_name engine_id expected_version expected_role expected_url expected_commit expected_archive expected_size expected_archive_sha
-  local install_dir receipt binary_path binary_sha source_dir unexpected_link expected_identity
+  local install_dir receipt binary_path binary_sha source_dir unexpected_link expected_identity network_path network_sha network_size
   engine_name="$1"
   case "${engine_name}" in
     stockfish)
@@ -59,6 +59,15 @@ verify_one() {
   binary_sha="$(sha256sum -- "${binary_path}" | cut -d' ' -f1)"
   [[ "${binary_sha}" == "$(jq -er '.binary.sha256' "${receipt}")" ]] || engine_die "${engine_name} binary checksum mismatch."
   [[ -x "${binary_path}" ]] || engine_die "${engine_name} binary is not executable."
+  if [[ "${engine_name}" == pikafish ]]; then
+    network_path="${install_dir}/payload/${PIKAFISH_NETWORK}"
+    engine_assert_child "${install_dir}" "${network_path}"
+    [[ -f "${network_path}" && ! -L "${network_path}" ]] || engine_die "Pikafish network is missing or unsafe."
+    network_size="$(stat -c %s -- "${network_path}")"
+    network_sha="$(sha256sum -- "${network_path}" | cut -d' ' -f1)"
+    [[ "${network_size}" == "${PIKAFISH_NETWORK_SIZE}" ]] || engine_die "Pikafish network size mismatch."
+    [[ "${network_sha}" == "${PIKAFISH_NETWORK_SHA256}" ]] || engine_die "Pikafish network checksum mismatch."
+  fi
   if [[ "${engine_name}" != fairy-stockfish ]] && ! engine_cpu_has_avxvnni; then
     engine_die "${engine_name} is pinned to AVX-VNNI but this CPU does not advertise support."
   fi

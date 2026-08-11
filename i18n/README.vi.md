@@ -18,7 +18,7 @@ LazyChess là xưởng học local-first cho Cờ vua quốc tế, Cờ tướng
 
 ![Xưởng học LazyChess](../docs/images/app.png)
 
-Giao diện tách biệt rõ bằng chứng chính xác, đã tính, biên soạn, từ máy, từ mô hình và ẩn dụ. Mười một ngôn ngữ trong ứng dụng có tính ngang hàng nghiêm ngặt về danh mục và biến; tiếng Ả Rập còn chuyển hướng tài liệu sang phải-qua-trái.
+Sơ đồ thế cờ đặc thù cho từng trò chơi tách biệt quyền kiểm soát ô và tiếp xúc quân chính xác, các đường đi đã tính và triển vọng đổi quân chỉ dựa trên tiếp xúc, kế hoạch được biên soạn và biến máy có giới hạn. Di chuột hoặc lấy tiêu điểm cho xem trước cùng bằng chứng mà không đi quân; chỉ xác nhận rõ ràng mới thay đổi ván đấu. Mười một ngôn ngữ trong ứng dụng có tính ngang hàng nghiêm ngặt về danh mục và biến; tiếng Ả Rập còn chuyển hướng tài liệu sang phải-qua-trái.
 
 ## Ba kênh luật
 
@@ -29,6 +29,15 @@ Giao diện tách biệt rõ bằng chứng chính xác, đã tính, biên soạ
 | Shogi | Bộ chuyển đổi TypeScript tự viết | Lõi giảng dạy gồm di chuyển, thả quân, quân trong tay, phong cấp, nifu, an toàn khi bị chiếu và thua khi hết nước; lặp lại, chiếu liên tục và chiếu hết bằng thả tốt được hoãn |
 
 Bạn đồng hành giải thích nhưng không đi quân. Máy tùy chọn chỉ cung cấp bằng chứng có giới hạn và không bao giờ thay đổi trạng thái có thẩm quyền.
+
+## Sơ đồ thế cờ và phân tích
+
+- **Kiểm soát** hiển thị tấn công và phòng thủ theo đúng luật từng trò chơi, gồm ô tốt tấn công, ngòi pháo và cản chân mã trong Cờ tướng, cùng thả quân Shogi tách khỏi khả năng di chuyển hợp lệ.
+- **An toàn** đánh dấu quân được bảo vệ, bị tấn công, không được bảo vệ, được cứu và mới bị lộ mà không giả vờ rằng chỉ cần tiếp xúc là đã chứng minh được một nước bắt quân.
+- **Đường** vẽ hướng của quân trượt theo đặc thù từng biến thể, các đường mở, ngòi pháo và vùng phong cấp—không phải lớp mây biểu thị lãnh thổ kiểu cờ vây.
+- **Vùng vua** so sánh các ô bị chiếu, các ô thù địch quanh vua và đích đi hợp lệ chính xác của vua, kể cả ràng buộc tướng đối mặt trong Cờ tướng.
+- Bàn cờ mới đưa ra một gợi ý giảng dạy được ghi rõ là giả định. Xem trước khi di chuột, lấy tiêu điểm hoặc chạm sẽ so sánh trước và sau; nhấp chuột phải hoặc Escape để xóa; **Xác nhận** là thao tác duy nhất làm thay đổi trạng thái.
+- Stockfish và Pikafish có thể bổ sung bằng chứng có giới hạn về điểm số và biến chính (PV) của máy chuyên dụng. Fairy-Stockfish được ghi rõ là phương án Shogi cổ điển dự phòng. Mỗi kênh máy nêu phía gốc làm góc nhìn, giới hạn tìm kiếm, độ sâu, số nút, thời gian, nguồn gốc mã nguồn/tệp nhị phân và thang điểm gốc của máy không thể so sánh giữa các biến thể trò chơi.
 
 ## Sơ đồ kho mã
 
@@ -57,6 +66,8 @@ Vite mặc định chỉ nghe loopback. Lựa chọn ngôn ngữ được lưu q
 - Bản xem trước dẫn xuất trạng thái bất biến và không ghi vào lưu trữ.
 - Lựa chọn cũ, không rõ, sai người hoặc sau khi kết thúc đều bị từ chối an toàn.
 - Nhận định chính xác, đã tính, biên soạn, máy, mô hình và ẩn dụ giữ nhãn nguồn riêng.
+- Các nước đáp lại một nước ứng viên là mẫu có giới hạn của những đặc điểm buộc đối phương phải đáp, không phải biến máy hay dự đoán được trình bày như thể bắt buộc; triển vọng vật chất dùng thang giá trị quân được biên soạn và nêu rõ.
+- Phân tích được gắn với toàn bộ token trạng thái và người hành động. Bằng chứng cũ từ máy hoặc ứng viên bị từ chối thay vì được vẽ lại trên một thế cờ mới hơn.
 - Giới hạn của Cờ tướng và Shogi luôn hiển thị thay vì được trình bày như phán định đầy đủ.
 
 ## Xác minh
@@ -66,7 +77,7 @@ npm run check
 git diff --check
 ```
 
-Bộ kiểm thử bao phủ luật tiêu biểu, đề xuất gắn trạng thái, tính lũy đẳng, xem trước bất biến, tranh chấp lưu trữ, tiếp tục phiên, an toàn đường dẫn máy, ngang hàng 11 ngôn ngữ, lưu ngôn ngữ, hướng RTL và xác nhận rõ ràng.
+Bộ kiểm thử bao phủ luật tiêu biểu, phân tích Shogi có độ phân nhánh cao, ứng viên gắn trạng thái, xem trước bất biến, bằng chứng bắt tốt qua đường/pháo/tướng đối mặt/thả quân, tính lũy đẳng, tranh chấp lưu trữ, tiếp tục phiên, giao thức máy có giới hạn và an toàn đường dẫn, ngang hàng 11 ngôn ngữ, lưu ngôn ngữ, hướng RTL và xác nhận rõ ràng.
 
 ## Trích dẫn
 
